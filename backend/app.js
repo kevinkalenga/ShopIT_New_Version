@@ -1,7 +1,17 @@
-import express from 'express' 
+
 import dotenv from 'dotenv'
-dotenv.config({path: 'backend/config/config.env'})
+import path from 'path';
+dotenv.config({path: './backend/config/config.env'})
+import express from 'express' 
+
+import  {connectedDatabase}  from './config/dbConnect.js';
+
 const app = express()
+
+
+
+// Connecter à la base de données
+connectedDatabase();
 
 // import des routes
 import productRoutes from './routes/productRoutes.js';
