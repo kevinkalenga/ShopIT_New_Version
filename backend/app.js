@@ -13,6 +13,7 @@ const app = express()
 // Connecter à la base de données
 connectedDatabase();
 
+app.use(express.json())
 // import des routes
 import productRoutes from './routes/productRoutes.js';
 
