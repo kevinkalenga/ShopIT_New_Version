@@ -23,6 +23,16 @@ app.use('/api/v1', productRoutes);
 // Middleware gestion erreurs
 app.use(errorMiddleware);
 
-app.listen(process.env.PORT, () => {
-    console.log(`Server started on PORT: ${process.env.PORT} in ${process.env.NODE_ENV} mode.`);
-})
+// Démarrage du serveur
+const server = app.listen(process.env.PORT, () => {
+  console.log(`Server started on PORT: ${process.env.PORT} in ${process.env.NODE_ENV} mode.`);
+}); 
+
+// Gestion des promesses non gérées
+process.on('unhandledRejection', (err) => {
+  console.log('ERROR:', err);
+  console.error('Stack trace:', err.stack);
+  server.close(() => {
+    process.exit(1);
+  });
+});
