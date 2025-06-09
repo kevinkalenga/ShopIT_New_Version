@@ -3,10 +3,15 @@ import dotenv from 'dotenv'
 import path from 'path';
 dotenv.config({path: './backend/config/config.env'})
 import express from 'express' 
+import authRoutes from './routes/authRoutes.js';
 
 import  {connectedDatabase}  from './config/dbConnect.js';
 import errorMiddleware from './middlewares/errors.js';
 const app = express()
+
+
+// Import des routes 
+
 
 
 // Handle Uncaught exceptions
@@ -25,6 +30,7 @@ import productRoutes from './routes/productRoutes.js';
 
 // Importer toutes les routes restantes
 app.use('/api/v1', productRoutes);
+app.use('/api/v1', authRoutes);
 
 // Middleware gestion erreurs
 app.use(errorMiddleware);
