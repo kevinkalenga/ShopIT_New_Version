@@ -4,7 +4,7 @@ import path from 'path';
 dotenv.config({path: './backend/config/config.env'})
 import express from 'express' 
 import authRoutes from './routes/authRoutes.js';
-
+import cookieParser from 'cookie-parser';
 import  {connectedDatabase}  from './config/dbConnect.js';
 import errorMiddleware from './middlewares/errors.js';
 const app = express()
@@ -25,6 +25,7 @@ process.on('uncaughtException', (err) => {
 connectedDatabase();
 
 app.use(express.json())
+app.use(cookieParser());
 // import des routes
 import productRoutes from './routes/productRoutes.js';
 
