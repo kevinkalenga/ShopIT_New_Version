@@ -11,7 +11,9 @@ import {
     updatePassword, 
     updateProfile,
     allUsers,
-    getUserDetails
+    getUserDetails,
+    updateUser, 
+    deleteUser
 } from "../controllers/authController.js";
 
 
@@ -31,6 +33,9 @@ router.route("/password/update").put(isAuthenticatedUser, updatePassword)
 
 // Admin routes
 router.route("/admin/users").get(isAuthenticatedUser, authorizeRoles('admin'), allUsers)
-router.route("/admin/users/:id").get(isAuthenticatedUser, authorizeRoles('admin'), getUserDetails)
+router.route("/admin/users/:id")
+      .get(isAuthenticatedUser, authorizeRoles('admin'), getUserDetails)
+      .put(isAuthenticatedUser, authorizeRoles('admin'), updateUser)
+      .delete(isAuthenticatedUser, authorizeRoles('admin'), deleteUser)
 
 export default router
