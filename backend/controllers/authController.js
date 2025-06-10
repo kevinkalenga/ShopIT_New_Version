@@ -146,6 +146,30 @@ export const getUserProfile = catchAsyncErrors(async (req, res, next) => {
     res.status(200).json({
         user,
     })
+}) 
+
+
+
+
+
+
+// Update Password => /api/v1/password/update
+
+export const updatePassword = catchAsyncErrors(async (req, res, next) => {
+    // select the password which is false so as to get it from our userModel
+    const user = await User.findById(req?.user?._id).select("+password")
+
+    // check the previous user password 
+    const isPasswordMatched = await user.comparePassword(req.body.oldPassword)
+
+    if (!isPasswordMatched) {
+        return next(new ErrorHandler('Old Password is incorrect', 400))
+    }
+
+    user.password = req.body.password;
+    user.save()
+
+    res.status(200).json({
+        success: true,
+    })
 })
-
-
