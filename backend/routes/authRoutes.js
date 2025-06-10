@@ -1,7 +1,18 @@
 import express from "express";
 const router = express.Router();
-import {isAuthenticatedUser } from "../middlewares/auth.js"
-import {registerUser, loginUser, logoutUser, forgotPassword, resetPassword, getUserProfile, updatePassword} from "../controllers/authController.js";
+import {authorizeRoles, isAuthenticatedUser } from "../middlewares/auth.js"
+import {
+    registerUser, 
+    loginUser, 
+    logoutUser, 
+    forgotPassword, 
+    resetPassword, 
+    getUserProfile, 
+    updatePassword, 
+    updateProfile,
+    allUsers,
+    getUserDetails
+} from "../controllers/authController.js";
 
 
 // pwd
@@ -15,6 +26,11 @@ router.route("/logout").get(logoutUser);
 
 // User Info
 router.route("/me").get(isAuthenticatedUser, getUserProfile)
+router.route("/me/update").put(isAuthenticatedUser, updateProfile)
 router.route("/password/update").put(isAuthenticatedUser, updatePassword)
+
+// Admin routes
+router.route("/admin/users").get(isAuthenticatedUser, authorizeRoles('admin'), allUsers)
+router.route("/admin/users/:id").get(isAuthenticatedUser, authorizeRoles('admin'), getUserDetails)
 
 export default router
