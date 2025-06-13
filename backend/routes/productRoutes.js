@@ -7,7 +7,7 @@ import {
      newProduct, 
      updateProduct, 
      createProductReview, 
-     getProductReviews} from '../controllers/productControllers.js';
+     getProductReviews, deleteReview} from '../controllers/productControllers.js';
 const router = express.Router()
 
 router.route("/products").get(getProducts);
@@ -19,7 +19,11 @@ router.route("/products/:id").delete(isAuthenticatedUser, authorizeRoles('admin'
 
 router
     .route("/reviews").get(isAuthenticatedUser, getProductReviews)
-    .put(isAuthenticatedUser, createProductReview)
+    .put(isAuthenticatedUser, createProductReview) 
+
+router
+    .route("/admin/reviews")
+    .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteReview)
 
 
 export default router;
