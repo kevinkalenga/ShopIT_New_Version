@@ -1,16 +1,22 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import MetaData from "./layout/MetaData";
 import ProductItem from './product/ProductItem';
 import Loader from './layout/Loader';
+import toast from 'react-hot-toast';
 
 import { useGetProductsQuery } from "../redux/api/productsApi";
 
 const Home = () => {
     
     
-    const { data, isLoading  } = useGetProductsQuery();
+    const { data, isLoading, error, isError} = useGetProductsQuery();
     console.log(data)
     
+     useEffect(() => {
+        if (isError) {
+            toast.error(error?.data?.message || "Erreur lors du chargement des produits");
+        }
+    }, [isError]);
 
      if (isLoading) return <Loader />;
     

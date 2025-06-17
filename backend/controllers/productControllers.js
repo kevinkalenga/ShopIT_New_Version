@@ -4,13 +4,15 @@ import ErrorHandler from "../utils/errorHandler.js";
 import APIFilters from "../utils/apiFilter.js";
 
 // Get all the products /api/v1/products
-export const getProducts = catchAsyncErrors(async (req, res) => {
+export const getProducts = catchAsyncErrors(async (req, res, next) => {
     const resPerPage = 4;
     const apiFilters = new APIFilters(Product, req.query).search().filters()
     console.log("req?.user", req?.user)
 
     let products = await apiFilters.query
-    let filteredProductsCount = products.length
+    let filteredProductsCount = products.length 
+
+   
    
     apiFilters.pagination(resPerPage)
     products = await apiFilters.query.clone()
