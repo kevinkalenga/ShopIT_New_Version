@@ -1,4 +1,5 @@
 import { configureStore} from "@reduxjs/toolkit";
+import { productApi } from "./api/productsApi";
 
 
 // create store which is going to be use in our entry point (index.js)

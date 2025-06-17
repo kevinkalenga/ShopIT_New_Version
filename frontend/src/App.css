@@ -566,3 +566,6 @@ footer {
   border-radius: 0.3rem;
   color: #fa9c23;
 }
+a {
+  text-decoration: none;
+}
