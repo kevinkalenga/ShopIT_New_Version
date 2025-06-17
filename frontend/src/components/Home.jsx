@@ -1,6 +1,7 @@
 import React from 'react'
 import MetaData from "./layout/MetaData";
 import ProductItem from './product/ProductItem';
+import Loader from './layout/Loader';
 
 import { useGetProductsQuery } from "../redux/api/productsApi";
 
@@ -10,6 +11,8 @@ const Home = () => {
     const { data, isLoading  } = useGetProductsQuery();
     console.log(data)
     
+
+     if (isLoading) return <Loader />;
     
     return (
     <>
