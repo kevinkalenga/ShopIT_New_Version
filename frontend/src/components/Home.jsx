@@ -14,6 +14,7 @@ const Home = () => {
 
     const page = Number(searchParams.get("page")) || 1;
     const keyword = searchParams.get("keyword") || "";
+    const category = searchParams.get("category") || "";
 
     const rawMin = searchParams.get("price[gte]");
     const rawMax = searchParams.get("price[lte]");
@@ -26,6 +27,7 @@ const Home = () => {
       keyword, 
        ...(min !== undefined && { "price[gte]": min }),
       ...(max !== undefined && { "price[lte]": max }),
+      ...(category && { category })
     };
      console.log("params:", params);
 
