@@ -28,6 +28,11 @@ export const getProducts = catchAsyncErrors(async (req, res, next) => {
         filter.name = { $regex: keyword, $options: 'i' };
     }
 
+    // Ratings
+     if (req.query.ratings) {
+         filter.ratings = { $gte: Number(req.query.ratings) };
+      }
+
     // Chercher les produits filtrés
     const totalProducts = await Product.find(filter);
     const filteredProductsCount = totalProducts.length;
@@ -44,23 +49,7 @@ export const getProducts = catchAsyncErrors(async (req, res, next) => {
     
     
     
-    // const resPerPage = 4;
-    // const apiFilters = new APIFilters(Product, req.query).search().filters()
-    // console.log("req?.user", req?.user)
-
-    // let products = await apiFilters.query
-    // let filteredProductsCount = products.length 
-
    
-   
-    // apiFilters.pagination(resPerPage)
-    // products = await apiFilters.query.clone()
-    
-    // res.status(200).json({
-    //     resPerPage,
-    //     filteredProductsCount,
-    //     products
-    // });
 })
 
 // Create new Product => /api/v1/admin/products

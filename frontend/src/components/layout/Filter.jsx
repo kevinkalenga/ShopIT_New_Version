@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { getPriceQueryParams } from "../../helpers/helpers";
 import { PRODUCT_CATEGORIE } from '../../constants/constants';
+import renderStars from '../../utils/renderStars';
 
 const Filter = () => {
 
@@ -141,31 +142,27 @@ const Filter = () => {
 
       <hr />
       <h5 className="mb-3">Ratings</h5>
+        
+        {
+                [5, 4, 3, 2, 1].map((rating) => (
+                    <div className="form-check">
+                        <input
+                            className="form-check-input"
+                            type="checkbox"
+                            name="ratings"
+                            id="check7"
+                            value={rating}
+                            checked={searchParams.get("ratings") === rating?.toString()}
+                            onClick={(e) => handleClick(e.target)}
+                        />
+                        <label className="form-check-label" htmlFor="check7">
+                             {renderStars(rating)} 
+                        </label>
+                    </div>
 
-      <div className="form-check">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          name="ratings"
-          id="check7"
-          value="5"
-        />
-        <label className="form-check-label" for="check7">
-          <span className="star-rating">★ ★ ★ ★ ★</span>
-        </label>
-      </div>
-      <div className="form-check">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          name="ratings"
-          id="check8"
-          value="4"
-        />
-        <label className="form-check-label" for="check8">
-          <span className="star-rating">★ ★ ★ ★ ☆</span>
-        </label>
-      </div>
+                ))
+            }
+      
     </div>
     )
 }
