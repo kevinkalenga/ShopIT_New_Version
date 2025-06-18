@@ -5,23 +5,62 @@ import APIFilters from "../utils/apiFilter.js";
 
 // Get all the products /api/v1/products
 export const getProducts = catchAsyncErrors(async (req, res, next) => {
-    const resPerPage = 4;
-    const apiFilters = new APIFilters(Product, req.query).search().filters()
-    console.log("req?.user", req?.user)
-
-    let products = await apiFilters.query
-    let filteredProductsCount = products.length 
-
-   
-   
-    apiFilters.pagination(resPerPage)
-    products = await apiFilters.query.clone()
     
-    res.status(200).json({
+    
+    const resPerPage = 4;
+
+    // Récupérer les valeurs des filtres directement dans req.query
+    const priceGte = req.query['price[gte]'] ? Number(req.query['price[gte]']) : undefined;
+    const priceLte = req.query['price[lte]'] ? Number(req.query['price[lte]']) : undefined;
+    const keyword = req.query.keyword || undefined;
+    const page = Number(req.query.page) || 1;
+
+    // Construire le filtre
+    const filter = {};
+
+    if (priceGte !== undefined || priceLte !== undefined) {
+        filter.price = {};
+        if (priceGte !== undefined) filter.price.$gte = priceGte;
+        if (priceLte !== undefined) filter.price.$lte = priceLte;
+    }
+
+    if (keyword) {
+        filter.name = { $regex: keyword, $options: 'i' };
+    }
+
+    // Chercher les produits filtrés
+    const totalProducts = await Product.find(filter);
+    const filteredProductsCount = totalProducts.length;
+
+    const products = await Product.find(filter)
+        .limit(resPerPage)
+        .skip(resPerPage * (page - 1));
+
+    return res.status(200).json({
         resPerPage,
         filteredProductsCount,
-        products
+        products,
     });
+    
+    
+    
+    // const resPerPage = 4;
+    // const apiFilters = new APIFilters(Product, req.query).search().filters()
+    // console.log("req?.user", req?.user)
+
+    // let products = await apiFilters.query
+    // let filteredProductsCount = products.length 
+
+   
+   
+    // apiFilters.pagination(resPerPage)
+    // products = await apiFilters.query.clone()
+    
+    // res.status(200).json({
+    //     resPerPage,
+    //     filteredProductsCount,
+    //     products
+    // });
 })
 
 // Create new Product => /api/v1/admin/products

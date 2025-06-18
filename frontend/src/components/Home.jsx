@@ -13,11 +13,25 @@ const Home = () => {
      let [searchParams] = useSearchParams();
 
     const page = Number(searchParams.get("page")) || 1;
-     const keyword = searchParams.get("keyword") || "";
-    const params = { page, keyword};
+    const keyword = searchParams.get("keyword") || "";
+
+    const rawMin = searchParams.get("price[gte]");
+    const rawMax = searchParams.get("price[lte]");
+
+    const min = rawMin !== null ? Number(rawMin) : undefined;
+    const max = rawMax !== null ? Number(rawMax) : undefined;
+    
+    const params = { 
+      page, 
+      keyword, 
+       ...(min !== undefined && { "price[gte]": min }),
+      ...(max !== undefined && { "price[lte]": max }),
+    };
+     console.log("params:", params);
+
     
     const { data, isLoading, error, isError} = useGetProductsQuery(params);
-    console.log(data)
+    
     
      useEffect(() => {
         if (isError) {
