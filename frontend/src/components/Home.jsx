@@ -5,6 +5,7 @@ import Loader from './layout/Loader';
 import toast from 'react-hot-toast';
 import CustomPagination from "./layout/CustomPagination";
 import { useSearchParams } from "react-router-dom";
+import Filter from "./layout/Filter";
 
 import { useGetProductsQuery } from "../redux/api/productsApi";
 
@@ -12,7 +13,8 @@ const Home = () => {
      let [searchParams] = useSearchParams();
 
     const page = Number(searchParams.get("page")) || 1;
-    const params = { page};
+     const keyword = searchParams.get("keyword") || "";
+    const params = { page, keyword};
     
     const { data, isLoading, error, isError} = useGetProductsQuery(params);
     console.log(data)
@@ -22,20 +24,30 @@ const Home = () => {
             toast.error(error?.data?.message || "Erreur lors du chargement des produits");
         }
     }, [isError]);
-
+     
+     const columnSize = keyword ? 4 : 3;
      if (isLoading) return <Loader />;
     
     return (
     <>
       <MetaData title="Buy Best Product Online" />
       <div className='row'>
-        <div className="col-6 col-md-12">
-            <h1 id="products_heading" className='text-secondary'>Latest Products</h1>
+          {keyword && (
+                    <div className='col-6 col-md-3 mt-5'>
+                        <Filter />
+                    </div>
+          )}
+        
+        <div className={keyword ? "col-6 col-md-9" : "col-6 col-md-12"}>
+            <h1 id="products_heading" className='text-secondary'>
+              {keyword ? `${data?.products?.length} Products found with keyword: ${keyword}` : "Latest Products"}
+              
+            </h1>
            <section id='products' className='mt-5'>
              <div className="row">
                 {
                   data?.products?.map((product) => (
-                  <ProductItem product={product} />
+                  <ProductItem product={product} columnSize={columnSize} />
                   ))
                 }
              </div>
