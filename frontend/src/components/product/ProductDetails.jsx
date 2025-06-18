@@ -7,6 +7,7 @@ import renderStars from '../../utils/renderStars';
 import Loader from '../layout/Loader';
 
 const ProductDetails = () => {
+      const [activeImg, setActiveImg] = useState("")
       const params = useParams()
     const { data, isLoading, error, isError } = useGetProductDetailsQuery(params?.id)
     console.log(data)
@@ -21,7 +22,7 @@ const ProductDetails = () => {
         }
     }, [isError])
 
-     const [activeImg, setActiveImg] = useState("")
+    
     
     
      if (isLoading) return <Loader />

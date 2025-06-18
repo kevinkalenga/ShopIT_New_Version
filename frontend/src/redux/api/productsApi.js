@@ -12,7 +12,9 @@ export const productApi = createApi({
             // params for all the params that we will pass like filter, etc.
             query: (params) => ({
                 url: "/products",
-                
+                params: {
+                    page: params?.page,
+                }
             }),
 
         }),

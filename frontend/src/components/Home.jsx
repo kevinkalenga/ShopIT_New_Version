@@ -3,13 +3,18 @@ import MetaData from "./layout/MetaData";
 import ProductItem from './product/ProductItem';
 import Loader from './layout/Loader';
 import toast from 'react-hot-toast';
+import CustomPagination from "./layout/CustomPagination";
+import { useSearchParams } from "react-router-dom";
 
 import { useGetProductsQuery } from "../redux/api/productsApi";
 
 const Home = () => {
+     let [searchParams] = useSearchParams();
+
+    const page = Number(searchParams.get("page")) || 1;
+    const params = { page};
     
-    
-    const { data, isLoading, error, isError} = useGetProductsQuery();
+    const { data, isLoading, error, isError} = useGetProductsQuery(params);
     console.log(data)
     
      useEffect(() => {
@@ -35,6 +40,10 @@ const Home = () => {
                 }
              </div>
            </section>
+            <CustomPagination
+                        resPerPage={data?.resPerPage}
+                        filteredProductsCount={data?.filteredProductsCount}
+                    />
         </div>
       </div>
     </>
