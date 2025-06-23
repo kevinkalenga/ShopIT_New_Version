@@ -23,7 +23,7 @@ process.on('uncaughtException', (err) => {
 // Connecter à la base de données
 connectedDatabase();
 
-app.use(express.json())
+app.use(express.json({limit: '10mb' }))
 app.use(cookieParser());
 // import des routes
 import productRoutes from './routes/productRoutes.js';

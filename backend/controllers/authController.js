@@ -6,7 +6,7 @@ import sendEmail from "../utils/sendEmail.js";
 import sendToken from "../utils/sendToken.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import crypto from "crypto"
-import { upload_file } from "../utils/cloudinary.js";
+import {delete_file, upload_file } from "../utils/cloudinary.js";
 // Register user => /api/v1/register
 export const registerUser = catchAsyncErrors(async (req, res, next) => {
     const { name, email, password } = req.body;
