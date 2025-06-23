@@ -195,6 +195,12 @@ export const updatePassword = catchAsyncErrors(async (req, res, next) => {
 })
 
 
+
+
+
+
+
+
 // Update User Profile => /api/v1/me/update
 
 export const updateProfile = catchAsyncErrors(async (req, res, next) => {
