@@ -1,25 +1,27 @@
 import { useEffect, useState } from "react";
 import { useLoginMutation } from "../../redux/api/authApi"
 import toast from 'react-hot-toast'
-
-import { Link} from "react-router-dom"
+import { useSelector } from "react-redux";
+import { Link, useNavigate} from "react-router-dom"
 import MetaData from '../layout/MetaData'
 
 
 const Login = () => {
-    // const { isAuthenticated } = useSelector((state) => state.auth)
+     const { isAuthenticated } = useSelector((state) => state.auth)
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("")
-    
+     const navigate = useNavigate()
 
     const [login, { isLoading, error, data }] = useLoginMutation()
     // console.log(login)
     useEffect(() => {
-       
+       if (isAuthenticated) {
+            navigate('/')
+        }
         if (error) {
             toast.error(error?.data?.message)
         }
-    }, [data, error])
+    }, [isAuthenticated, error])
 
     const submitHandler = (e) => {
         e.preventDefault()

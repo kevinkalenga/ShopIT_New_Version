@@ -1,14 +1,30 @@
 
 import React from 'react'
 import Search from './Search'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useGetMeQuery } from '../../redux/api/userApi';
-import { Link} from 'react-router-dom';
+import { useLazyLogoutQuery } from '../../redux/api/authApi';
+import { logoutUser } from '../../redux/features/userSlice'
+import { Link, useNavigate} from 'react-router-dom';
 
  const Header = () => {
   
     const { isLoading } = useGetMeQuery()
+      const [logout] = useLazyLogoutQuery()
    const { user } = useSelector(state => state.auth)
+
+   const navigate = useNavigate()
+   const dispatch = useDispatch();
+
+      const logoutHandler = async () => {
+         try {
+                 await logout().unwrap() // appelle la mutation logout de RTK
+                 dispatch(logoutUser()) // nettoie le state Redux
+                 navigate('/login')
+    } catch (err) {
+        console.error('Erreur de déconnexion:', err)
+    }
+    }
   
   return (
     
@@ -56,7 +72,7 @@ import { Link} from 'react-router-dom';
 
                                 <Link className="dropdown-item" to="/me/profile"> Profile </Link>
 
-                                <Link className="dropdown-item text-danger" to="/"> Logout </Link>
+                                <Link onClick={logoutHandler} className="dropdown-item text-danger" to="/"> Logout </Link>
                             </div>
                         </div>
 
