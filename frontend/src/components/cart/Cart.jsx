@@ -42,6 +42,10 @@ const Cart = () => {
           const removeCartItemHandle = (id) => {
           dispatch(removeCartItem(id))
          }
+
+          const checkOutHandler = () => {
+            navigate('/shipping')
+         }
   
   return (
     <>
@@ -108,15 +112,19 @@ const Cart = () => {
           <h4>Order Summary</h4>
           <hr />
           <p>Units:{" "}: <span className="order-summary-values">
-          
+              {
+              cartItems?.reduce((acc, item) => acc + item?.quantity, 0)
+            }
             {" "}
             (Units)</span></p>
           <p>Est. total: <span className="order-summary-values">
-            $1499.97
+              ${
+              cartItems?.reduce((acc, item) => acc + item?.quantity * item.price, 0).toFixed(2)
+            }
             </span></p>
           <hr />
           <button 
-               
+               onClick={checkOutHandler}
               id="checkout_btn" 
               className="btn btn-primary w-100">
             Check out
