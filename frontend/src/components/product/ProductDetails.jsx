@@ -5,11 +5,14 @@ import { useParams } from 'react-router-dom'
 import MetaData from '../layout/MetaData';
 import renderStars from '../../utils/renderStars'; 
 import Loader from '../layout/Loader';
+import { setCartItem } from "../../redux/features/cartSlice";
+import { useDispatch } from "react-redux";
 
 const ProductDetails = () => {
      const [quantity, setQuantity] = useState(1)
       const [activeImg, setActiveImg] = useState("")
       const params = useParams()
+      const dispatch = useDispatch()
     const { data, isLoading, error, isError } = useGetProductDetailsQuery(params?.id)
     console.log(data)
      const product = data?.product;
@@ -40,6 +43,20 @@ const ProductDetails = () => {
     }
     
     
+       const setItemToCart = () => {
+        const cartItem = {
+            product: product?._id,
+            name: product?.name,
+            price: product?.price,
+            image: product?.images[0]?.url,
+            stock: product?.stock,
+            quantity
+            
+        }
+
+        dispatch(setCartItem(cartItem))
+        toast.success("Item added to Cart")
+    }
     
     
     if (isLoading) return <Loader />
@@ -113,7 +130,8 @@ const ProductDetails = () => {
           type="button"
           id="cart_btn"
           className="btn btn-primary d-inline ms-4"
-          disabled=""
+          disabled={product?.stock <= 0}
+          onClick={setItemToCart}
         >
           Add to Cart
         </button>
