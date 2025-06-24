@@ -2,7 +2,7 @@ import { useSelector,useDispatch } from 'react-redux'
 import MetaData from '../layout/MetaData'
 import { Link, useNavigate } from 'react-router-dom'
 
-import { setCartItem} from '../../redux/features/cartSlice';
+import { setCartItem, removeCartItem} from '../../redux/features/cartSlice';
 
 const Cart = () => {
   const dispatch = useDispatch()
@@ -38,7 +38,10 @@ const Cart = () => {
              dispatch(setCartItem(cartItem))
             
          }
-  
+         
+          const removeCartItemHandle = (id) => {
+          dispatch(removeCartItem(id))
+         }
   
   return (
     <>
@@ -84,6 +87,7 @@ const Cart = () => {
             <div className="col-4 col-lg-1 mt-4 mt-lg-0">
               <i id="delete_cart_item"
                  className="fa fa-trash btn btn-danger"
+                 onClick={() =>removeCartItemHandle(item?.product)}
                  
                  ></i>
             </div>
@@ -108,7 +112,7 @@ const Cart = () => {
             {" "}
             (Units)</span></p>
           <p>Est. total: <span className="order-summary-values">
-            
+            $1499.97
             </span></p>
           <hr />
           <button 
