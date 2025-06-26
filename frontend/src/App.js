@@ -18,6 +18,7 @@ import UploadAvatar from './components/user/UploadAvatar';
 import UpdatePassword from './components/user/UpdatePassword';
 import ForgotPassword from './components/auth/ForgotPassword';
 import ResetPassword from './components/auth/ResetPassword';
+import ConfirmOrder from './components/cart/ConfirmOrder';
 
 function App() {
   return (
@@ -62,6 +63,13 @@ function App() {
                 <Route path='/shipping' element={
                   <ProtectedRoute>
                        <Shipping />
+                  </ProtectedRoute>
+               
+            } />
+               
+                 <Route path='/confirm_order' element={
+                  <ProtectedRoute>
+                       <ConfirmOrder />
                   </ProtectedRoute>
                
             } />
