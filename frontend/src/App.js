@@ -5,6 +5,7 @@ import { Toaster } from 'react-hot-toast';
 
 import Header from './components/layout/Header';
 import Cart from './components/cart/Cart';
+import Shipping from './components/cart/Shipping ';
 import Footer from './components/layout/Footer';
 import Home from './components/Home';
 import ProductDetails from './components/product/ProductDetails';
@@ -58,6 +59,12 @@ function App() {
             } />
 
                <Route path='/cart' element={<Cart />} />
+                <Route path='/shipping' element={
+                  <ProtectedRoute>
+                       <Shipping />
+                  </ProtectedRoute>
+               
+            } />
             
             </Routes>
         </div>
