@@ -6,6 +6,7 @@ import express from 'express'
 import cookieParser from 'cookie-parser';
 import  {connectedDatabase}  from './config/dbConnect.js';
 import errorMiddleware from './middlewares/errors.js';
+import paymentRoutes from './routes/paymentRoutes.js';
 const app = express()
 
 
@@ -34,6 +35,7 @@ import orderRoutes from './routes/orderRoutes.js';
 app.use('/api/v1', productRoutes);
 app.use('/api/v1', authRoutes);
 app.use('/api/v1', orderRoutes);
+app.use('/api/v1', paymentRoutes);
 
 // Middleware gestion erreurs
 app.use(errorMiddleware);
