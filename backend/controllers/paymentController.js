@@ -1,8 +1,15 @@
-
+import Stripe from 'stripe';
+import dotenv from 'dotenv';
+import path from 'path';
 
 import catchAsyncErrors from "../middlewares/catchAsyncErrors.js";
-import Stripe from "stripe";
-import Order from "../models/orderModel.js";
+
+
+// Charger les variables d'environnement
+dotenv.config({ path: path.resolve('./backend/config/config.env') });
+
+
+const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 // Supprimer cette ligne !
 // const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -57,23 +64,29 @@ export const stripeCheckoutSession = catchAsyncErrors(async (req, res, next) => 
   });
 });
 
-const getOrderItems = async (line_items) => {
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY); // Ajouté ici aussi si besoin
-  const cartItems = await Promise.all(
-    line_items.data.map(async (item) => {
-      const product = await stripe.products.retrieve(item.price.product);
-      const productId = product.metadata.productId;
+// const stripe = new Stripe(process.env.STRIPE_SECRET_KEY); // 🔐 Clé secrète Stripe
 
-      return {
-        product: productId,
-        name: product.name,
-        price: item.price.unit_amount_decimal / 100,
-        quantity: item.quantity,
-        image: product.images[0],
-      };
-    })
-  );
 
-  return cartItems;
+
+export const stripeWebhookHandler = (req, res) => {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+  const sig = req.headers['stripe-signature'];
+  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+  } catch (err) {
+    console.error('❌ Erreur webhook:', err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
+    console.log('✅ Paiement terminé pour session :', session.id);
+    // TODO: Ajoute ton traitement ici
+  }
+
+  res.status(200).json({ received: true });
 };
-

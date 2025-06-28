@@ -6,7 +6,7 @@ import express from 'express'
 import cookieParser from 'cookie-parser';
 import  {connectedDatabase}  from './config/dbConnect.js';
 import errorMiddleware from './middlewares/errors.js';
-import paymentRoutes from './routes/paymentRoutes.js';
+
 const app = express()
 
 
@@ -24,12 +24,17 @@ process.on('uncaughtException', (err) => {
 // Connecter à la base de données
 connectedDatabase();
 
+import bodyParser from 'body-parser'; // Required for Stripe webhook raw parser
+// ⚠️ Register Stripe webhook FIRST with raw body parser
+app.use('/api/v1/payment/webhook', bodyParser.raw({ type: 'application/json' }));
+
 app.use(express.json({limit: '10mb' }))
 app.use(cookieParser());
 // import des routes
 import productRoutes from './routes/productRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
 
 // Importer toutes les routes restantes
 app.use('/api/v1', productRoutes);
