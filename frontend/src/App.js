@@ -20,6 +20,7 @@ import ForgotPassword from './components/auth/ForgotPassword';
 import ResetPassword from './components/auth/ResetPassword';
 import ConfirmOrder from './components/cart/ConfirmOrder';
 import PaymentMethod from './components/cart/PaymentMethod';
+import MyOrders from './components/order/MyOrders';
 
 function App() {
   return (
@@ -78,6 +79,13 @@ function App() {
                 <Route path='/payment_method' element={
                   <ProtectedRoute>
                        <PaymentMethod />
+                  </ProtectedRoute>
+               
+            } />
+            
+                <Route path='/me/orders' element={
+                  <ProtectedRoute>
+                       <MyOrders />
                   </ProtectedRoute>
                
             } />
