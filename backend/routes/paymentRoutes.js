@@ -1,6 +1,6 @@
 import express from "express";
 import { isAuthenticatedUser } from "../middlewares/auth.js";
-import { stripeCheckoutSession, stripeWebhookHandler } from "../controllers/paymentController.js";
+import { stripeCheckoutSession, stripeWebhook, stripeWebhookHandler } from "../controllers/paymentController.js";
 import bodyParser from "body-parser"; // NE PAS utiliser express.json ici
 
 const router = express.Router();
@@ -14,6 +14,8 @@ router.post(
   bodyParser.raw({ type: 'application/json' }),
   stripeWebhookHandler
 );
+
+
 
 export default router;
 
