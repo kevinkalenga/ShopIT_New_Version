@@ -7,6 +7,7 @@ import renderStars from "../../utils/renderStars";
 import Loader from "../layout/Loader";
 import { setCartItem } from "../../redux/features/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
+import UserAvatar from "../UserAvatar";
 
 const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1);
@@ -190,7 +191,9 @@ const ProductDetails = () => {
 
           {product?.reviews?.map((rev) => (
             <div key={rev._id} className="mt-3 p-3 border rounded">
-               
+           
+              <UserAvatar user={rev.user} size={40} className="me-2" />
+
               <strong className="me-1">{rev.user?.name || "Anonymous"}</strong>
                
               <div className="d-flex align-items-center">
