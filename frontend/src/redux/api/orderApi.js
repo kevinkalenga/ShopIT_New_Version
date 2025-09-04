@@ -4,7 +4,15 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 export const orderApi = createApi({
     reducerPath: "orderApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: "/api/v1"
+        baseUrl: "/api/v1",
+        prepareHeaders: (headers, { getState }) => {
+        const token = getState().auth?.user?.token;
+         console.log("User token in prepareHeaders:", token);
+        if (token) {
+          headers.set("Authorization", `Bearer ${token}`);
+        }
+      return headers;
+    },
     }),
 
     endpoints: (builder) => ({
@@ -19,6 +27,9 @@ export const orderApi = createApi({
         }),
         myOrders: builder.query({
            query: () => `/me/orders`,
+        }),
+        orderDetails: builder.query({
+           query: (id) => `/orders/${id}`,
         }),
 
         stripeCheckoutSession: builder.mutation({
@@ -38,4 +49,11 @@ export const orderApi = createApi({
     }),
 });
 
- export const { useCreateNewOrderMutation, useStripeCheckoutSessionMutation, useMyOrdersQuery } = orderApi;
+ export const { 
+     useCreateNewOrderMutation, 
+     useStripeCheckoutSessionMutation, 
+     useMyOrdersQuery, 
+     useOrderDetailsQuery 
+} = orderApi;
+
+

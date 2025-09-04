@@ -28,13 +28,19 @@ export const userSlice = createSlice({
         },
         // ✅ New reducer for login
         setCredentials(state, action) {
-            state.user = action.payload;
-            state.isAuthenticated = true;
-            state.loading = false;
-        }
+        state.user = {
+            ...action.payload.user,
+            token: action.payload.token,
+        };
+        state.isAuthenticated = true;
+        state.loading = false;
+}
+
     }
 })
 
 export default userSlice.reducer
 
 export const { setIsAuthenticated, setUser, setLoading, logoutUser,  setCredentials } = userSlice.actions
+
+

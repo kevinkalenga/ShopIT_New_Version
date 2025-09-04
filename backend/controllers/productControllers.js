@@ -64,7 +64,7 @@ export const newProduct = catchAsyncErrors(async(req, res) => {
 
 // Get single product details => /api/v1/products/:id 
 export const getProductDetails = catchAsyncErrors(async (req, res, next) => {
-    const product = await Product.findById(req?.params.id);
+    const product = await Product.findById(req?.params.id).populate({ path: 'reviews.user', select: 'name' });
     
     if(!product) {
         return next(new ErrorHandler("Product not found", 404))
@@ -101,47 +101,91 @@ export const deleteProduct = catchAsyncErrors(async (req, res) => {
 })
 
 // Create/Update product review => /api/v1/reviews
+// export const createProductReview = catchAsyncErrors(async (req, res, next) => {
+//     const { rating, comment } = req.body;
+//     const productId = req.params.id; // ← important !
+
+//     const review = {
+//         user: req.user._id,
+//         rating: Number(rating),
+//         comment,
+//     };
+
+//     const product = await Product.findById(productId);
+//     if (!product) return next(new ErrorHandler("Product not found", 404));
+
+//     const isReviewed = product.reviews.find(r => r.user.toString() === req.user._id.toString());
+
+//     if (isReviewed) {
+//         product.reviews.forEach(r => {
+//             if (r.user.toString() === req.user._id.toString()) {
+//                 r.comment = comment;
+//                 r.rating = rating;
+//             }
+//         });
+//     } else {
+//         product.reviews.push(review);
+//         product.numOfReviews = product.reviews.length;
+//     }
+
+//     product.ratings = product.reviews.reduce((acc, item) => acc + item.rating, 0) / product.reviews.length;
+
+//     await product.save({ validateBeforeSave: false });
+
+//     res.status(201).json({
+//         success: true,
+//         product, // ⚡ contient ratings, numOfReviews et reviews à jour
+//         message: "Review added successfully"
+//     });
+// });
+
 export const createProductReview = catchAsyncErrors(async (req, res, next) => {
+  const { rating, comment } = req.body;
+  const product = await Product.findById(req.params.id);
+  if (!product) return next(new ErrorHandler("Product not found", 404));
 
-    const { rating, comment, productId } = req.body
-    // user review
+  const isReviewed = product.reviews.find(
+    r => r.user.toString() === req.user._id.toString()
+  );
+
+  if (isReviewed) {
+    product.reviews.forEach(r => {
+      if (r.user.toString() === req.user._id.toString()) {
+        r.comment = comment;
+        r.rating = Number(rating);
+        r.updatedAt = new Date(); // Met à jour la date
+      }
+    });
+  } else {
     const review = {
-        user: req?.user?._id,
-        rating: Number(rating),
-        comment,
-    }
-    // search the product in the database
-    const product = await Product.findById(productId)
+      name: req.user.name,
+      user: req.user._id,
+      rating: Number(rating),
+      comment,
+      createdAt: new Date(),
+    };
+    product.reviews.push(review);
+    product.numOfReviews = product.reviews.length;
+  }
 
-    if (!product) {
-        return next(new ErrorHandler("Produc not found", 404))
-    }
-    //  we have an array
-    const isReviewed = product?.reviews?.find(
-        (r) => r.user.toString() === req?.user?._id.toString()
-    )
+  product.ratings =
+    product.reviews.reduce((acc, item) => acc + item.rating, 0) / product.reviews.length;
 
-    if (isReviewed) {
-        product.reviews.forEach((review) => {
-            if (review?.user?.toString() === req?.user?.toString()) {
-                review.comment = comment;
-                review.rating = rating;
-            }
-        })
-    } else {
-        product.reviews.push(review);
-        product.numOfReviews = product.reviews.length
-    }
+  await product.save({ validateBeforeSave: false });
 
-    product.ratings = product.reviews.reduce((acc, item) => item.rating + acc, 0) /
-        product.reviews.length
+  const populatedProduct = await Product.findById(product._id)
+    .populate("reviews.user", "name"); // récupère le nom correctement
 
-    await product.save({ validateBeforeSave: false })
-
-    res.status(200).json({
-        success: true,
-    }) 
+  res.status(201).json({
+    success: true,
+    product: populatedProduct,
+    message: "Review added successfully",
+  });
 });
+
+
+
+
 
 // Get product reviews => /api/v1/reviews 
 export const getProductReviews = catchAsyncErrors(async (req, res, next) => {

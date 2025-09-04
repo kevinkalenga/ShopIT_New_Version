@@ -17,9 +17,11 @@ router.route("/products/:id").get(getProductDetails);
 router.route("/products/:id").put(isAuthenticatedUser, authorizeRoles('admin'), updateProduct);
 router.route("/products/:id").delete(isAuthenticatedUser, authorizeRoles('admin'), deleteProduct);
 
+// Reviews d'un produit spécifique
 router
-    .route("/reviews").get(isAuthenticatedUser, getProductReviews)
-    .put(isAuthenticatedUser, createProductReview) 
+    .route("/products/:id/reviews")   // :id correspond au productId
+    .get(getProductReviews)           // récupérer toutes les reviews d'un produit
+    .post(isAuthenticatedUser, createProductReview);  // créer une review pour un produit
 
 router
     .route("/admin/reviews")

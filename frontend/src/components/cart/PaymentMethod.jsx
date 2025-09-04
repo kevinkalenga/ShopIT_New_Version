@@ -37,45 +37,127 @@ const PaymentMethod = () => {
       }
 
       if(isSuccess) {
-        navigate("/")
+        // navigate("/")
+        navigate("/me/orders?order_success=true")
       }
     }, [error, isSuccess, navigate])
+
+
+    const submitHandler = (e) => {
+  e.preventDefault();
+
+    if (!method) {
+    toast.error("Merci de sélectionner une méthode de paiement.");
+    return;
+  }
+  const { itemsPrice, shippingPrice, taxPrice, totalPrice } = calculateOrderCost(cartItems);
+
+  // Toujours formater correctement les items
+  // const orderItems = cartItems.map((item) => ({
+  //   name: item.name,
+  //   quantity: item.quantity,
+  //   image: item.image,
+  //   price: item.price,
+  //   product: item.product || item._id,
+
+  // }));
+
+
+  const orderItems = cartItems.map((item, index) => {
+  const productId = item.product || item._id;
+
+  if (!productId) {
+    console.warn(`⚠️ Aucun product ID trouvé pour cartItem[${index}] :`, item);
+  } else {
+    console.log(`✅ cartItem[${index}] - product ID :`, productId);
+  }
+
+  return {
+    name: item.name,
+    quantity: item.quantity,
+    image: item.image,
+    price: item.price,
+    product: productId,
+  };
+});
+
+
+  if (method === "COD") {
+    const orderData = {
+      shippingInfo,
+      orderItems,
+      itemsPrice,
+      shippingAmount: shippingPrice,
+      taxAmount: taxPrice,
+      totalAmount: totalPrice,
+      paymentInfo: {
+        status: "Not Paid",
+      },
+      paymentMethod: "COD",
+    };
+
+    createNewOrder(orderData);
+  }
+  console.log("Méthode sélectionnée :", method);
+  console.log("🛒 OrderItems prêt à l'envoi :", orderItems);
+
+
+
+  if (method === "Card") {
+    const orderData = {
+      shippingInfo,
+      orderItems,
+      itemsPrice,
+      shippingAmount: shippingPrice,
+      taxAmount: taxPrice,
+      totalAmount: totalPrice,
+    };
+
+    console.log("Envoi à Stripe avec orderData :", orderData);
+    console.log("🛒 OrderItems prêt à l'envoi :", orderItems);
+
+
+
+    stripeCheckoutSession(orderData);
+  }
+};
+
    
    
-   const submitHandler = (e) => {
-     e.preventDefault() 
-      const {itemsPrice, shippingPrice, taxPrice,totalPrice } = calculateOrderCost(cartItems)
-     if(method === "COD") {
-        // Create COD Order 
-        const orderData = {
-           shippingInfo,
-           orderItems: cartItems,
-           itemsPrice,
-           shippingAmount:shippingPrice, 
-           taxAmount:taxPrice,
-           totalAmount:totalPrice,
-           paymentInfo: {
-             status: "Not Paid",
+  //  const submitHandler = (e) => {
+  //    e.preventDefault() 
+  //     const {itemsPrice, shippingPrice, taxPrice,totalPrice } = calculateOrderCost(cartItems)
+  //    if(method === "COD") {
+  //       // Create COD Order 
+  //       const orderData = {
+  //          shippingInfo,
+  //          orderItems: cartItems,
+  //          itemsPrice,
+  //          shippingAmount:shippingPrice, 
+  //          taxAmount:taxPrice,
+  //          totalAmount:totalPrice,
+  //          paymentInfo: {
+  //            status: "Not Paid",
 
-           },
-           paymentMethod: "COD"
-        }
-         createNewOrder(orderData)
-     } 
+  //          },
+  //          paymentMethod: "COD"
+  //       }
+  //        createNewOrder(orderData)
+  //    } 
 
-     if(method === "Card") {
-          const orderData = {
-           shippingInfo,
-           orderItems: cartItems,
-           itemsPrice,
-           shippingAmount:shippingPrice, 
-           taxAmount:taxPrice,
-           totalAmount:totalPrice,
+  //    if(method === "Card") {
+  //         const orderData = {
+  //          shippingInfo,
+  //          orderItems: cartItems,
+  //          itemsPrice,
+  //          shippingAmount:shippingPrice, 
+  //          taxAmount:taxPrice,
+  //          totalAmount:totalPrice,
            
-        };
-        stripeCheckoutSession(orderData)
-     }
-   }
+  //       };
+  //       stripeCheckoutSession(orderData)
+  //    }
+  //  }
   
   return (
     <>

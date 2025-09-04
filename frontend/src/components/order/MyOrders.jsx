@@ -3,16 +3,24 @@ import { useMyOrdersQuery } from '../../redux/api/orderApi'
 import toast from 'react-hot-toast';
 import Loader from '../layout/Loader';
 import { MDBDataTable } from 'mdbreact';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import MetaData from '../layout/MetaData';
+import { useSelector} from 'react-redux';
+
 
 const MyOrders = () => {
-
+  
   const { data, isLoading, error } = useMyOrdersQuery();
+  console.log(data)
+  console.log("User token:", useSelector(state => state.auth?.user?.token));
+
+
 
   useEffect(() => {
     if (error) {
       toast.error(error?.data?.message);
     }
+   
   }, [error]);
 
   const setOrders = () => {
@@ -53,6 +61,7 @@ const MyOrders = () => {
 
   return (
     <div>
+       <MetaData title={'My Orders'} />
       <h1 className='my-5'>{data?.orders?.length} Orders</h1>
       <MDBDataTable
         data={setOrders()}

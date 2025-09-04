@@ -26,7 +26,7 @@ const Cart = () => {
      
          const setItemToCart = (item, newQty) => {
              const cartItem = {
-                 product: item?.product,
+                 product: item?._id || item.product,
                  name: item?.name,
                  price: item?.price,
                  image: item?.image,

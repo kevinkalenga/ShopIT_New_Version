@@ -25,7 +25,7 @@ const orderSchema = new mongoose.Schema({
     },
     //   the user that has created the order
     user: {
-        type: mongoose.Schema.Types.ObjectId,
+        type:  mongoose.Types.ObjectId,
         required: true,
         ref: "User",
     },
@@ -37,7 +37,7 @@ const orderSchema = new mongoose.Schema({
                 required: true,
             },
             quantity: {
-                type: String,
+                type: Number,
                 required: true,
             },
             image: {
@@ -45,11 +45,11 @@ const orderSchema = new mongoose.Schema({
                 required: true
             },
             price: {
-                type: String,
+                 type: Number,
                 required: true,
             },
             product: {
-                type: mongoose.Schema.Types.ObjectId,
+                type: mongoose.Types.ObjectId,
                 required: true,
                 ref: "Product",
             },
@@ -87,7 +87,7 @@ const orderSchema = new mongoose.Schema({
         type: String,
         enum: {
             values: ["Processing", "Shipped", "Delivered"],
-            message: "Please select corretc order status"
+            message: "Please select correct order status"
         },
         default: "Processing",
     },

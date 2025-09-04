@@ -3,11 +3,19 @@ import Order from "../models/orderModel.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import Product from "../models/productModel.js";
 
-// Create new Order => /api/v1/orders/new 
+
+
+
+
+//Create new Order => /api/v1/orders/new 
 export const newOrder = catchAsyncErrors(async (req, res, next) => {
-    // get the detail from the body
+    console.log("BODY REÇU :", req.body);
+    console.log("Utilisateur connecté :", req.user._id);
+    console.log("User dans newOrder:", req.user);
+
+
     const {
-        orderItem,
+        orderItems,
         shippingInfo,
         itemsPrice,
         taxAmount,
@@ -16,10 +24,15 @@ export const newOrder = catchAsyncErrors(async (req, res, next) => {
         paymentMethod,
         paymentInfo,
     } = req.body;
+
+    if (!orderItems || !Array.isArray(orderItems) || orderItems.length === 0) {
+        return next(new ErrorHandler("Aucun produit dans la commande", 400));
+    }
+
     
-    // create the order
+    // ✅ Création de la commande
     const order = await Order.create({
-        orderItem,
+        orderItems,
         shippingInfo,
         itemsPrice,
         taxAmount,
@@ -32,8 +45,9 @@ export const newOrder = catchAsyncErrors(async (req, res, next) => {
 
     res.status(200).json({
         order,
-    })
-}); 
+    });
+});
+
 
 // Get order details => /api/v1/orders/:id
 
@@ -42,7 +56,7 @@ export const getOrderDetails = catchAsyncErrors(async (req, res, next) => {
     const order = await Order.findById(req.params.id).populate(
         "user",
         "name email"
-    )
+    ).populate("orderItems.product", "name image price");
 
     if (!order) {
         return next(new ErrorHandler("No order found with this ID", 404));

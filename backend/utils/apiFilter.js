@@ -5,13 +5,15 @@ class APIFilters {
     }
 
      search() {
+        // if the keyword is in the query then we search the name
        const keyword = this.queryStr.keyword ? {
           name: {
             $regex: this.queryStr.keyword,
             $options: "i",
           }
        } : {};
-
+       
+    // we prepare the query   
        this.query = this.query.find({...keyword}) 
        return this
     }
