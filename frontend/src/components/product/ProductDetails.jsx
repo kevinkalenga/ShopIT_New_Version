@@ -207,7 +207,7 @@ const ProductDetails = () => {
         dateStyle: "short",
         timeStyle: "short",
       }).format(new Date(rev.createdAt))
-    : "Date inconnue"}
+    : "Unknown date"}
 </small>
 
             </div>
