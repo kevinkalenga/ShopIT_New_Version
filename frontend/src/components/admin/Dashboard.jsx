@@ -7,8 +7,27 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const Dashboard = () => {
   
-   const [startDate, setStartDate] = useState(new Date().setDate(1))
-   const [endDate, setEndDate] = useState(new Date())
+  const [startDate, setStartDate] = useState(() => {
+  const d = new Date();
+  d.setDate(1);   // first day of month
+  return d;
+});
+
+const [endDate, setEndDate] = useState(new Date());
+
+
+   const submitHandler = () => {
+    //  console.log(new Date(startDate).toISOString())
+    //  console.log(endDate.toISOString())
+       console.log("Start Date:", startDate.toISOString());
+  console.log("End Date:", endDate.toISOString());
+
+  fetch(`/api/v1/admin/get_sales?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`)
+    .then(res => res.json())
+    .then(data => {
+      console.log("Sales Data:", data);
+    });
+   }
   
     return (
     <AdminLayout>
@@ -36,7 +55,7 @@ const Dashboard = () => {
           className='form-control'
         />
       </div>
-      <button className="btn fetch-btn ms-4 mt-3 px-5">Fetch</button>
+      <button onClick={submitHandler} className="btn fetch-btn ms-4 mt-3 px-5">Fetch</button>
      </div>
        
          

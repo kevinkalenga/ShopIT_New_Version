@@ -138,3 +138,120 @@ export const deleteOrder = catchAsyncErrors(async (req, res, next) => {
         success: true,
     })
 });
+
+// async function getSalesData(startDate, endDate) {
+//   const salesData = await Order.aggregate([
+//      {
+//         // Filter results
+//         $match: {
+//             createdAt: {
+//                 $gte: new Date(startDate),
+//                 $lte: new Date(endDate),
+//             }
+//         }
+//      },
+//      {
+//         // Group data 
+//         $group: {
+//             _id:{
+//                 date: {$dateToString: {format: "%Y-%m-%d", date: "$createdAt"}}
+//             },
+//             totalSales: {$sum: "$totalAmount"},
+//             numOrder: {$num: 1}, // count the number of orders
+//         }
+//      }
+//   ])
+
+//   console.log(salesData)
+// }
+// Get Sales Data => /api/v1/admin/get_sales
+
+async function getSalesData(startDate, endDate) {
+  const salesData = await Order.aggregate([
+    {
+      // Filter results
+      $match: {
+        createdAt: {
+          $gte: new Date(startDate),
+          $lte: new Date(endDate),
+        }
+      }
+    },
+    {
+      // Group data
+      $group: {
+        _id: {
+          date: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }
+        },
+        totalSales: { $sum: "$totalAmount" },
+        numOrder: { $sum: 1 }   // ✅ counts number of orders
+      }
+    },
+    {
+      // Optional: sort by date ascending
+      $sort: { "_id.date": 1 }
+    }
+  ]);
+
+  console.log(salesData);
+  return salesData;
+
+
+
+
+
+}
+
+
+// Helper → generate date range
+function getDatesBetween(startDate, endDate) {
+  const dates = [];
+  let currentDate = new Date(startDate);
+
+  while (currentDate <= new Date(endDate)) {
+    const formattedDate = currentDate.toISOString().split("T")[0];
+    dates.push(formattedDate);
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return dates;
+}
+
+
+
+
+
+// ----------------- GET SALES ENDPOINT -----------------
+export const getSales = catchAsyncErrors(async (req, res, next) => {
+  const startDate = new Date(req.query.startDate);
+  const endDate = new Date(req.query.endDate);
+
+  startDate.setHours(0, 0, 0, 0);
+  endDate.setHours(23, 59, 59, 999);
+
+  // Récupère les ventes depuis MongoDB
+  const salesData = await getSalesData(startDate, endDate);
+
+  // Générer toutes les dates du range
+  const allDates = getDatesBetween(startDate, endDate);
+
+  // Compléter les dates manquantes
+  const finalSalesData = allDates.map((date) => {
+    const found = salesData.find((s) => s._id.date === date);
+    return found ? found : { _id: { date }, totalSales: 0, numOrder: 0 };
+  });
+
+  console.log("Final salesData:", finalSalesData);
+
+
+  // Totalisation
+  const totalSales = finalSalesData.reduce((acc, cur) => acc + cur.totalSales, 0);
+  const totalOrders = finalSalesData.reduce((acc, cur) => acc + cur.numOrder, 0);
+
+  res.status(200).json({
+    success: true,
+    salesData: finalSalesData,
+    totalSales,
+    totalOrders,
+  });
+});
+
