@@ -28,7 +28,7 @@ export const productApi = createApi({
 
         }),
 
-         createReview: builder.mutation({
+        createReview: builder.mutation({
             query: ({ productId, rating, comment }) => ({
                 url: `/products/${productId}/reviews`,
                 method: "POST",
@@ -38,9 +38,12 @@ export const productApi = createApi({
                 { type: "Product", id: productId }, // ⚡ force le refetch du produit concerné
              ],
         }),
+        getAdminProducts: builder.query({
+            query: () => `/admin/products`
+        })
         
 
     }),
 });
 
-export const { useGetProductsQuery, useGetProductDetailsQuery, useCreateReviewMutation } = productApi;
+export const { useGetProductsQuery, useGetProductDetailsQuery, useCreateReviewMutation, useGetAdminProductsQuery } = productApi;

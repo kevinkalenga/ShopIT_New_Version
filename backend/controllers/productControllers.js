@@ -232,3 +232,12 @@ export const deleteReview = catchAsyncErrors(async (req, res, next) => {
         product,
     })
 });
+
+// Get products Admin => /api/v1/admin/products/ 
+export const getAdminProducts = catchAsyncErrors(async (req, res, next) => {
+    const product = await Product.find();
+    
+    res.status(200).json({
+        product,
+    })
+})

@@ -5,6 +5,7 @@ import SalesChart from '../charts/SalesChart'
 import { useGetDashboardSalesQuery } from '../../redux/api/orderApi';
 import toast from 'react-hot-toast'
 import Loader from '../layout/Loader'
+import MetaData from '../layout/MetaData';
 
 
 import "react-datepicker/dist/react-datepicker.css";
@@ -40,6 +41,7 @@ const { data, isLoading, error, refetch } = useGetDashboardSalesQuery({
    if(isLoading) return <Loader />
     return (
     <AdminLayout>
+      <MetaData title={'Admin Dashboard'} />
      <div className="d-flex justify-content-start align-items-center">
       <div className="mb-3 me-4">
         <label className="form-label d-block">Start Date</label>

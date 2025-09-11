@@ -7,11 +7,15 @@ import {
      newProduct, 
      updateProduct, 
      createProductReview, 
-     getProductReviews, deleteReview} from '../controllers/productControllers.js';
+     getProductReviews, deleteReview,
+     getAdminProducts} from '../controllers/productControllers.js';
 const router = express.Router()
 
 router.route("/products").get(getProducts);
-router.route("/admin/products").post(isAuthenticatedUser, authorizeRoles('admin'), newProduct);
+router
+     .route("/admin/products")
+     .post(isAuthenticatedUser, authorizeRoles('admin'), newProduct)
+     .get(isAuthenticatedUser, authorizeRoles("admin"), getAdminProducts);
 
 router.route("/products/:id").get(getProductDetails);
 router.route("/products/:id").put(isAuthenticatedUser, authorizeRoles('admin'), updateProduct);
