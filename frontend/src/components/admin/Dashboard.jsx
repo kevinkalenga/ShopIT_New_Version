@@ -1,7 +1,11 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import AdminLayout from '../layout/AdminLayout'
 import DatePicker from "react-datepicker";
 import SalesChart from '../charts/SalesChart'
+import { useGetDashboardSalesQuery } from '../../redux/api/orderApi';
+import toast from 'react-hot-toast'
+import Loader from '../layout/Loader'
+
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -15,20 +19,25 @@ const Dashboard = () => {
 
 const [endDate, setEndDate] = useState(new Date());
 
+const { data, isLoading, error, refetch } = useGetDashboardSalesQuery({
+  startDate: startDate.toISOString(),
+  endDate: endDate.toISOString()
+});
+
+    useEffect(() => {
+          
+           if (error) {
+               toast.error(error?.data?.message)
+           }
+      }, [error])
+
 
    const submitHandler = () => {
-    //  console.log(new Date(startDate).toISOString())
-    //  console.log(endDate.toISOString())
-       console.log("Start Date:", startDate.toISOString());
-  console.log("End Date:", endDate.toISOString());
-
-  fetch(`/api/v1/admin/get_sales?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`)
-    .then(res => res.json())
-    .then(data => {
-      console.log("Sales Data:", data);
-    });
+     refetch()
    }
-  
+
+   console.log(data)
+   if(isLoading) return <Loader />
     return (
     <AdminLayout>
      <div className="d-flex justify-content-start align-items-center">
@@ -66,7 +75,8 @@ const [endDate, setEndDate] = useState(new Date());
             <div className="text-center card-font-size">
               Sales
               <br />
-              <b>$0.00</b>
+              <b>${data?.totalSales?.toFixed(2)}</b>
+              
             </div>
           </div>
         </div>
@@ -84,7 +94,7 @@ const [endDate, setEndDate] = useState(new Date());
         </div>
       </div>
     </div>
-     <SalesChart />
+     <SalesChart salesData={data?.salesData} />
     <div className="mb-5"></div>
     </AdminLayout>
   )

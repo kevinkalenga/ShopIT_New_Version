@@ -225,8 +225,8 @@ export const getSales = catchAsyncErrors(async (req, res, next) => {
   const startDate = new Date(req.query.startDate);
   const endDate = new Date(req.query.endDate);
 
-  startDate.setHours(0, 0, 0, 0);
-  endDate.setHours(23, 59, 59, 999);
+  startDate.setUTCHours(0, 0, 0, 0);
+  endDate.setUTCHours(23, 59, 59, 999);
 
   // Récupère les ventes depuis MongoDB
   const salesData = await getSalesData(startDate, endDate);
