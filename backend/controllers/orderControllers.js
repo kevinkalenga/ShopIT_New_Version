@@ -139,31 +139,7 @@ export const deleteOrder = catchAsyncErrors(async (req, res, next) => {
     })
 });
 
-// async function getSalesData(startDate, endDate) {
-//   const salesData = await Order.aggregate([
-//      {
-//         // Filter results
-//         $match: {
-//             createdAt: {
-//                 $gte: new Date(startDate),
-//                 $lte: new Date(endDate),
-//             }
-//         }
-//      },
-//      {
-//         // Group data 
-//         $group: {
-//             _id:{
-//                 date: {$dateToString: {format: "%Y-%m-%d", date: "$createdAt"}}
-//             },
-//             totalSales: {$sum: "$totalAmount"},
-//             numOrder: {$num: 1}, // count the number of orders
-//         }
-//      }
-//   ])
 
-//   console.log(salesData)
-// }
 // Get Sales Data => /api/v1/admin/get_sales
 
 async function getSalesData(startDate, endDate) {
