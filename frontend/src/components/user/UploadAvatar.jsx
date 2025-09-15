@@ -38,7 +38,7 @@ const UploadAvatar = () => {
              uploadavatar(userData)
          }
     
-     const onChange = (e) => {
+    const onChange = (e) => {
         const reader = new FileReader()
         reader.onload = () => {
             if(reader.readyState === 2) {

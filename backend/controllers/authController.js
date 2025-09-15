@@ -22,6 +22,7 @@ export const registerUser = catchAsyncErrors(async (req, res, next) => {
 
 // Login user => /api/v1/login
 export const loginUser = catchAsyncErrors(async (req, res, next) => {
+     console.log("Login body:", req.body);
     const { email, password } = req.body;
 
     if (!email || !password || email === "" || password === "") {

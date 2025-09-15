@@ -8,7 +8,18 @@ import {
      updateProduct, 
      createProductReview, 
      getProductReviews, deleteReview,
-     getAdminProducts} from '../controllers/productControllers.js';
+     getAdminProducts,
+     uploadProductImages} from '../controllers/productControllers.js';
+
+
+// Mémoire storage pour récupérer les fichiers en buffer
+import multer from 'multer';
+import { upload_file } from '../utils/cloudinary.js';
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+
+
 const router = express.Router()
 
 router.route("/products").get(getProducts);
@@ -16,6 +27,10 @@ router
      .route("/admin/products")
      .post(isAuthenticatedUser, authorizeRoles('admin'), newProduct)
      .get(isAuthenticatedUser, authorizeRoles("admin"), getAdminProducts);
+
+router
+     .route("/admin/products/:id/upload_images")
+     .put(isAuthenticatedUser, authorizeRoles('admin'),  upload.array('images'), uploadProductImages)
 
 router.route("/products/:id").get(getProductDetails);
 router.route("/products/:id").put(isAuthenticatedUser, authorizeRoles('admin'), updateProduct);
