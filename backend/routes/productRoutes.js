@@ -9,7 +9,8 @@ import {
      createProductReview, 
      getProductReviews, deleteReview,
      getAdminProducts,
-     uploadProductImages} from '../controllers/productControllers.js';
+     uploadProductImages,
+     deleteProductImage} from '../controllers/productControllers.js';
 
 
 // Mémoire storage pour récupérer les fichiers en buffer
@@ -31,6 +32,9 @@ router
 router
      .route("/admin/products/:id/upload_images")
      .put(isAuthenticatedUser, authorizeRoles('admin'),  upload.array('images'), uploadProductImages)
+router
+     .route("/admin/products/:id/delete_image")
+     .put(isAuthenticatedUser, authorizeRoles('admin'),  upload.array('images'), deleteProductImage)
 
 router.route("/products/:id").get(getProductDetails);
 router.route("/products/:id").put(isAuthenticatedUser, authorizeRoles('admin'), updateProduct);

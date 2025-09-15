@@ -3,7 +3,9 @@ import AdminLayout from "../layout/AdminLayout";
 import MetaData from "../layout/MetaData";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { useGetProductDetailsQuery, useUploadProductImagesMutation } from "../../redux/api/productsApi";
+import { useGetProductDetailsQuery, 
+  useUploadProductImagesMutation, 
+  useDeleteProductImageMutation } from "../../redux/api/productsApi";
 
 const UploadImages = () => {
   const params = useParams();
@@ -14,6 +16,7 @@ const UploadImages = () => {
   const [imagesPreview, setImagesPreview] = useState([]);
   const [uploadedImages, setUploadedImages] = useState([]);
   
+  const [deleteProductImage, {isLoading:isDeleteLoading, error:deleteError}] = useDeleteProductImageMutation()
   const [uploadProductImages, {isLoading, error, isSuccess}] = useUploadProductImagesMutation()
   const { data } = useGetProductDetailsQuery(params?.id);
   console.log(data);
@@ -25,6 +28,9 @@ const UploadImages = () => {
 
     if (error) {
             toast.error(error?.data?.message);
+    }
+    if (deleteError) {
+            toast.error(deleteError?.data?.message);
     }
     
     if(isSuccess) {
@@ -100,6 +106,10 @@ const onChange = (e) => {
 
   await uploadProductImages({ id: params.id, body: formData });
 };
+
+const deleteImage = (imgId) => {
+  deleteProductImage({id:params?.id, body: {imgId}})
+}
 
 
   return (
@@ -185,8 +195,9 @@ const onChange = (e) => {
                             borderColor: "#dc3545",
                           }}
                           className="btn btn-block btn-danger cross-button mt-1 py-0"
-                          disabled={true}
+                          disabled={isLoading || isDeleteLoading}
                           type="button"
+                          onClick={() => deleteImage(img?.public_id)}
                         >
                           <i className="fa fa-trash"></i>
                         </button>
@@ -197,7 +208,7 @@ const onChange = (e) => {
               </div>
             )}
 
-            <button disabled={isLoading} id="register_button" type="submit" className="btn w-100 py-2">
+            <button disabled={isLoading || isDeleteLoading} id="register_button" type="submit" className="btn w-100 py-2">
               {
                 isLoading ? "Uploading..." : "Upload"
               }
