@@ -91,37 +91,90 @@ export const allOrders = catchAsyncErrors(async (req, res, next) => {
 });
 // Update orders - Admin => /api/v1/admin/orders/
 
+// export const updateOrder = catchAsyncErrors(async (req, res, next) => {
+
+//     const order = await Order.findById(req.params.id)
+//     if (!order) {
+//         return next(new ErrorHandler("No order found with this ID", 404));
+//     }
+
+//     if (order?.orderStatus === "Delivered") {
+//         return next(new ErrorHandler("You have already delivered this order", 400))
+//     }
+
+//     let productNotFound = false
+
+//     // Update products stock
+//     for(const item of order.orderItems) {
+//         const product = await Product.findById(item?.product?.toString())
+//         if (!product) {
+//             productNotFound = true;
+//             break
+//         }
+//         product.stock = product.stock - item.quantity
+//         await product.save({ validateBeforeSave: false })
+//     }
+
+//     if (productNotFound) {
+//         return next(new ErrorHandler("No product found with one or more IDs", 404));
+//     }
+
+//     order.orderStatus = req.body.status;
+//     order.deliveredAt = Date.now()
+
+//     await order.save();
+
+
+//     res.status(200).json({
+//         success: true,
+//     })
+// });
+
 export const updateOrder = catchAsyncErrors(async (req, res, next) => {
+  const order = await Order.findById(req.params.id);
 
-    const order = await Order.findById(req.params.id)
-    if (!order) {
-        return next(new ErrorHandler("No order found with this ID", 404));
+  if (!order) {
+    return next(new ErrorHandler("No order found with this ID", 404));
+  }
+
+  if (order?.orderStatus === "Delivered") {
+    return next(
+      new ErrorHandler("You have already delivered this order", 400)
+    );
+  }
+
+  // Met à jour le stock des produits
+  for (const item of order.orderItems) {
+    const product = await Product.findById(item?.product?.toString());
+
+    if (!product) {
+      return next(
+        new ErrorHandler(
+          "No product found with ID: " + item?.product,
+          404
+        )
+      );
     }
 
-    if (order?.orderStatus === "Delivered") {
-        return next(new ErrorHandler("You have already delivered this order", 400))
-    }
+    product.stock -= item.quantity;
 
-    // Update products stock
-    order?.orderItems?.forEach(async (item) => {
-        const product = await Product.findById(item?.product?.toString())
-        if (!product) {
-            return next(new ErrorHandler("No product found with this ID", 404));
-        }
-        product.stock = product.stock - item.quantity
-        await product.save({ validateBeforeSave: false })
-    })
+    await product.save({ validateBeforeSave: false });
+  }
 
-    order.orderStatus = req.body.status;
-    order.deliveredAt = Date.now()
+  // Mets à jour le statut de la commande
+  order.orderStatus = req.body.status;
 
-    await order.save();
+  if (req.body.status === "Delivered") {
+    order.deliveredAt = Date.now();
+  }
 
+  await order.save();
 
-    res.status(200).json({
-        success: true,
-    })
+  res.status(200).json({
+    success: true,
+  });
 });
+
 
 // Delete order => /api/v1/admin/orders/:id
 

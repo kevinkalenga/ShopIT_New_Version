@@ -14,6 +14,7 @@ export const orderApi = createApi({
       return headers;
     },
     }),
+    tagTypes: ["Order"],
 
     endpoints: (builder) => ({
         createNewOrder: builder.mutation({
@@ -30,6 +31,7 @@ export const orderApi = createApi({
         }),
         orderDetails: builder.query({
            query: (id) => `/orders/${id}`,
+           providesTags: ["Order"]
         }),
 
         stripeCheckoutSession: builder.mutation({
@@ -48,6 +50,17 @@ export const orderApi = createApi({
         getAdminOrders: builder.query({
            query: () => `/admin/orders`,
         }),
+
+         updateOrder: builder.mutation({
+           query({id, body}) {
+             return {
+                url: `/admin/orders/${id}`,
+                method: "PUT",
+                body,
+             }
+           },
+           invalidatesTags: ["Order"]
+        }),
        
         
 
@@ -61,6 +74,7 @@ export const orderApi = createApi({
      useOrderDetailsQuery,
      useGetDashboardSalesQuery,
      useGetAdminOrdersQuery,
+     useUpdateOrderMutation,
 } = orderApi;
 
 
