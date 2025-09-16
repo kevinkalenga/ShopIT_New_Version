@@ -14,7 +14,7 @@ export const orderApi = createApi({
       return headers;
     },
     }),
-    tagTypes: ["Order"],
+    tagTypes: ["Order", "AdminOrders"],
 
     endpoints: (builder) => ({
         createNewOrder: builder.mutation({
@@ -49,6 +49,7 @@ export const orderApi = createApi({
         }),
         getAdminOrders: builder.query({
            query: () => `/admin/orders`,
+           providesTags: ["AdminOrders"]
         }),
 
          updateOrder: builder.mutation({
@@ -60,6 +61,16 @@ export const orderApi = createApi({
              }
            },
            invalidatesTags: ["Order"]
+        }),
+         deleteOrder: builder.mutation({
+           query(id) {
+             return {
+                url: `/admin/orders/${id}`,
+                method: "DELETE",
+                
+             }
+           },
+           invalidatesTags: ["AdminOrders"]
         }),
        
         
@@ -75,6 +86,7 @@ export const orderApi = createApi({
      useGetDashboardSalesQuery,
      useGetAdminOrdersQuery,
      useUpdateOrderMutation,
+     useDeleteOrderMutation,
 } = orderApi;
 
 

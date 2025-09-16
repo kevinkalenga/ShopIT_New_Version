@@ -5,7 +5,7 @@ import { MDBDataTable } from 'mdbreact';
 import { Link} from 'react-router-dom';
 import MetaData from '../layout/MetaData';
 import AdminLayout from '../layout/AdminLayout';
-import { useGetAdminOrdersQuery } from '../../redux/api/orderApi';
+import { useGetAdminOrdersQuery, useDeleteOrderMutation } from '../../redux/api/orderApi';
 
 
 
@@ -13,6 +13,7 @@ const ListOrders = () => {
   
   const { data, isLoading, error } = useGetAdminOrdersQuery();
   console.log(data)
+  const [deleteOrder, {error:deleteError, isLoading: isDeleteLoading, isSuccess}] = useDeleteOrderMutation()
  
  
 
@@ -20,21 +21,23 @@ const ListOrders = () => {
     if (error) {
       toast.error(error?.data?.message);
     }
-    // if (deleteError) {
-    //   toast.error(deleteError?.data?.message);
-    // }
+    if (deleteError) {
+      toast.error(deleteError?.data?.message);
+    }
+    if (isSuccess) {
+      toast.error("Order Deleted");
+    }
    
    
-  }, [error]);
+  }, [error, deleteError, isSuccess]);
 
-// const deleteProductHandler = async (id) => {
-//   try {
-//      await deleteProduct(id).unwrap(); // unwrap permet de récupérer l’erreur si elle existe
-//      toast.success("Product deleted");
-//     } catch (err) {
-//      toast.error(err?.data?.message || "Delete failed");
-//    }
-// };
+const deleteOrderHandler = async (id) => {
+  try {
+     await deleteOrder(id).unwrap(); // unwrap permet de récupérer l’erreur si elle existe
+    } catch (err) {
+     toast.error(err?.data?.message || "Delete failed");
+   }
+};
 
   
   
@@ -63,8 +66,8 @@ const ListOrders = () => {
           </Link>
           
           <Link  className="btn btn-outline-danger btn-sm ms-2" 
-                //  onClick={() => deleteProductHandler(product?._id)} 
-                //  disabled={isDeleteLoading}
+                 onClick={() => deleteOrderHandler(order?._id)} 
+                 disabled={isDeleteLoading}
                  >
             <i className='fa fa-trash'></i>
           </Link>
