@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useGetAdminProductsQuery } from '../../redux/api/productsApi';
+import { useGetAdminProductsQuery, useDeleteProductMutation} from '../../redux/api/productsApi';
 import toast from 'react-hot-toast';
 import Loader from '../layout/Loader';
 import { MDBDataTable } from 'mdbreact';
@@ -14,16 +14,31 @@ const ListProducts = () => {
   const { data, isLoading, error } = useGetAdminProductsQuery();
   console.log(data)
  
-
+ const [deleteProduct, {isLoading: isDeleteLoading, error: deleteError, isSuccess}] = useDeleteProductMutation()
 
 
   useEffect(() => {
     if (error) {
       toast.error(error?.data?.message);
     }
+    if (deleteError) {
+      toast.error(deleteError?.data?.message);
+    }
    
-  }, [error]);
+   
+  }, [error, deleteError, isSuccess]);
 
+const deleteProductHandler = async (id) => {
+  try {
+     await deleteProduct(id).unwrap(); // unwrap permet de récupérer l’erreur si elle existe
+     toast.success("Product deleted");
+    } catch (err) {
+     toast.error(err?.data?.message || "Delete failed");
+   }
+};
+
+  
+  
   const setProducts = () => {
     const products = {
       columns: [
@@ -50,7 +65,10 @@ const ListProducts = () => {
           <Link to={`/admin/products/${product?._id}/upload_images`} className="btn btn-outline-success btn-sm ms-2">
             <i className='fa fa-image'></i>
           </Link>
-          <Link  className="btn btn-outline-danger btn-sm ms-2">
+          <Link  className="btn btn-outline-danger btn-sm ms-2" 
+                 onClick={() => deleteProductHandler(product?._id)} 
+                 disabled={isDeleteLoading}
+                 >
             <i className='fa fa-trash'></i>
           </Link>
          </>
