@@ -31,7 +31,19 @@ export const upload_file = (fileBuffer, folder) => {
   });
 };
 
-export const delete_file = async (file) => {
-  const res = await cloudinary.v2.uploader.destroy(file);
-  if (res?.result === "ok") return true;
+// export const delete_file = async (file) => {
+//   const res = await cloudinary.v2.uploader.destroy(file);
+//   if (res?.result === "ok") return true;
+// };
+
+export const delete_file = async (public_id) => {
+  try {
+    const res = await cloudinary.v2.uploader.destroy(public_id, { resource_type: "image" }); 
+    // ⚡ ou "auto" si tu veux couvrir tous les types
+    console.log("Cloudinary delete result:", res);
+    return res?.result === "ok";
+  } catch (err) {
+    console.error("Cloudinary deletion error:", err);
+    return false;
+  }
 };

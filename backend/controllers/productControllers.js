@@ -137,6 +137,7 @@ export const deleteProduct = catchAsyncErrors(async (req, res, next) => {
 
     for (let i = 0; i < product?.images?.length; i++) {
       if (product.images[i]?.public_id) {
+         console.log("Deleting:", product.images[i].public_id)
         await delete_file(product.images[i].public_id);
       }
     }
