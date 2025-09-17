@@ -8,7 +8,7 @@ export const userApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: "/api/v1"
     }),
-    tagTypes: ["User"],
+    tagTypes: ["User", "AdminUsers"],
     endpoints: (builder) => ({
 
         getMe: builder.query({
@@ -76,6 +76,10 @@ export const userApi = createApi({
                 }
             },
             
+        }),
+        getAdminUsers: builder.query({
+            query: () => `/admin/users`,
+            providesTags: ["AdminUsers"]
         })
         
     }),
@@ -87,5 +91,6 @@ export const {
     useUploadAvatarMutation, 
     useUpdatePasswordMutation,
     useForgotPasswordMutation,
-    useResetPasswordMutation
+    useResetPasswordMutation,
+    useGetAdminUsersQuery
 } = userApi;
