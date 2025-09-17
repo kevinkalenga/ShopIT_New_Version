@@ -5,7 +5,7 @@ import { MDBDataTable } from 'mdbreact';
 import { Link} from 'react-router-dom';
 import MetaData from '../layout/MetaData';
 import AdminLayout from '../layout/AdminLayout';
-import { useGetAdminUsersQuery} from "../../redux/api/userApi"
+import { useGetAdminUsersQuery, useDeleteUserMutation} from "../../redux/api/userApi"
 
 
 
@@ -14,6 +14,9 @@ const ListUsers = () => {
   
   const { data, isLoading, error } = useGetAdminUsersQuery();
   console.log(data)
+
+  const [deleteUser, {error: deleteError, isLoading: isDeleteLoading, isSuccess}] = useDeleteUserMutation()
+
   
  
  
@@ -22,23 +25,23 @@ const ListUsers = () => {
     if (error) {
       toast.error(error?.data?.message);
     }
-    // if (deleteError) {
-    //   toast.error(deleteError?.data?.message);
-    // }
-    // if (isSuccess) {
-    //   toast.error("Order Deleted");
-    // }
+    if (deleteError) {
+      toast.error(deleteError?.data?.message);
+    }
+    if (isSuccess) {
+      toast.success("User Deleted");
+    }
    
    
-  }, [error]);
+  }, [error, deleteError, isSuccess]);
 
-// const deleteOrderHandler = async (id) => {
-//   try {
-//      await deleteOrder(id).unwrap(); // unwrap permet de récupérer l’erreur si elle existe
-//     } catch (err) {
-//      toast.error(err?.data?.message || "Delete failed");
-//    }
-// };
+const deleteUserHandler = async (id) => {
+  try {
+     await deleteUser(id).unwrap(); // unwrap permet de récupérer l’erreur si elle existe
+    } catch (err) {
+     toast.error(err?.data?.message || "Delete failed");
+   }
+};
 
   
   
@@ -69,8 +72,8 @@ const ListUsers = () => {
           </Link>
           
           <Link  className="btn btn-outline-danger btn-sm ms-2" 
-                //  onClick={() => deleteOrderHandler(order?._id)} 
-                //  disabled={isDeleteLoading}
+                 onClick={() => deleteUserHandler(user?._id)} 
+                 disabled={isDeleteLoading}
                  >
             <i className='fa fa-trash'></i>
           </Link>
