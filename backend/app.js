@@ -6,6 +6,7 @@ import express from 'express'
 import cookieParser from 'cookie-parser';
 import  {connectedDatabase}  from './config/dbConnect.js';
 import errorMiddleware from './middlewares/errors.js';
+import cors from "cors";
 
 const app = express()
 
@@ -30,6 +31,10 @@ app.use('/api/v1/payment/webhook', bodyParser.raw({ type: 'application/json' }))
 
 app.use(express.json({limit: '10mb' }))
 app.use(cookieParser());
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true,
+}));
 // import des routes
 import productRoutes from './routes/productRoutes.js';
 import authRoutes from './routes/authRoutes.js';

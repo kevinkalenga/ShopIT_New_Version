@@ -24,6 +24,7 @@ const ProductDetails = () => {
   const product = data?.product;
 
   useEffect(() => {
+    // Si l image existe dans le tableau d'image
     setActiveImg(product?.images[0]?.url || "/images/default_product.png");
   }, [product]);
 
@@ -69,7 +70,7 @@ const ProductDetails = () => {
         setRating(0);
         setComment("");
         refetch();
-        // ✅ product sera refetch automatiquement si RTK Query invalidatesTags est configuré
+        // product sera refetch automatiquement si RTK Query invalidatesTags est configuré
       })
       .catch((err) => toast.error(err?.data?.message || "Failed to submit review"));
   };

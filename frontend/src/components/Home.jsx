@@ -10,15 +10,20 @@ import Filter from "./layout/Filter";
 import { useGetProductsQuery } from "../redux/api/productsApi";
 
 const Home = () => {
-     let [searchParams] = useSearchParams();
-
+    //  to get the page number in the url
+    let [searchParams] = useSearchParams();
+    // if the page is not there
     const page = Number(searchParams.get("page")) || 1;
     const keyword = searchParams.get("keyword") || "";
     const category = searchParams.get("category") || "";
     const rating = searchParams.get("ratings");
 
-    const rawMin = searchParams.get("price[gte]");
-    const rawMax = searchParams.get("price[lte]");
+    // const rawMin = searchParams.get("price[gte]");
+    // const rawMax = searchParams.get("price[lte]");
+
+    const rawMin = searchParams.get("min");
+    const rawMax = searchParams.get("max");
+
 
     const min = rawMin !== null ? Number(rawMin) : undefined;
     const max = rawMax !== null ? Number(rawMax) : undefined;
@@ -39,9 +44,9 @@ const Home = () => {
     
      useEffect(() => {
         if (isError) {
-            toast.error(error?.data?.message || "Erreur lors du chargement des produits");
+            toast.error(error?.data?.message || "Error during the loading");
         }
-    }, [isError]);
+    }, [isError, error]);
      
      const columnSize = keyword ? 4 : 3;
      if (isLoading) return <Loader />;

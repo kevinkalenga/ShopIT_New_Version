@@ -4,7 +4,9 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 export const productApi = createApi({
     reducerPath: "productApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: "/api/v1",
+        // baseUrl: "/api/v1",
+        baseUrl: "http://localhost:4000/api/v1",
+        credentials: "include", 
         prepareHeaders: (headers, { getState }) => {
         const token = getState().auth?.user?.token;
         if (token) headers.set("Authorization", `Bearer ${token}`);
@@ -95,7 +97,9 @@ export const productApi = createApi({
             },
             invalidatesTags: ["AdminProducts"],
         }),
-        
+        getProductReviews: builder.query({
+            query: (productId) => `/products/${productId}/reviews`
+        })
 
     }),
 });
@@ -110,4 +114,5 @@ export const {
     useUploadProductImagesMutation,
     useDeleteProductImageMutation,
     useDeleteProductMutation,
+    useLazyGetProductReviewsQuery,
 } = productApi;

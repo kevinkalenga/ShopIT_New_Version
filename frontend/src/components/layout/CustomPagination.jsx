@@ -20,12 +20,15 @@ const CustomPagination = ({ resPerPage, filteredProductsCount }) => {
     // pagaNumber coming from react pagination
     const setCurrentPageNumber = (pageNumber) => {
         setCurrentPage(pageNumber)
-
+        // has come from searchParams and 
         if (searchParams.has("page")) {
+            // update the value in the url
             searchParams.set("page", pageNumber)
         } else {
+            // add the value if not in the url
             searchParams.append("page", pageNumber)
         }
+        // the path
         const path = window.location.pathname + "?" + searchParams.toString();
         navigate(path);
     }

@@ -76,7 +76,7 @@ export const getProductDetails = catchAsyncErrors(async (req, res, next) => {
     })
 })
 // Update product => /api/v1/products/:id 
-export const updateProduct = catchAsyncErrors(async (req, res) => {
+export const updateProduct = catchAsyncErrors(async (req, res, next) => {
     let product = await Product.findByIdAndUpdate(req?.params?.id, req.body, { new: true });
     
     if(!product) {
@@ -88,7 +88,7 @@ export const updateProduct = catchAsyncErrors(async (req, res) => {
     })
 })
 // Upload product images => /api/v1/admin/products/:id/upload_images
-export const uploadProductImages = catchAsyncErrors(async (req, res) => {
+export const uploadProductImages = catchAsyncErrors(async (req, res, next) => {
     const product = await Product.findById(req.params.id);
     if (!product) return next(new ErrorHandler("Product not found", 404));
 
@@ -102,7 +102,7 @@ export const uploadProductImages = catchAsyncErrors(async (req, res) => {
     res.status(200).json({ product });
 });
 // Delete product images => /api/v1/admin/products/:id/delete_images
-export const deleteProductImage = catchAsyncErrors(async (req, res) => {
+export const deleteProductImage = catchAsyncErrors(async (req, res, next) => {
     const product = await Product.findById(req.params.id);
     if (!product) return next(new ErrorHandler("Product not found", 404));
 
@@ -203,7 +203,7 @@ export const createProductReview = catchAsyncErrors(async (req, res, next) => {
 
 // Get product reviews => /api/v1/reviews 
 export const getProductReviews = catchAsyncErrors(async (req, res, next) => {
-    const product = await Product.findById(req.query.id)
+    const product = await Product.findById(req.query.id).populate("reviews.user", "name avatar");
 
     if (!product) {
         return next(new ErrorHandler("Product not found", 400))
