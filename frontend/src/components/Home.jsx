@@ -18,8 +18,7 @@ const Home = () => {
     const category = searchParams.get("category") || "";
     const rating = searchParams.get("ratings");
 
-    // const rawMin = searchParams.get("price[gte]");
-    // const rawMax = searchParams.get("price[lte]");
+ 
 
     const rawMin = searchParams.get("min");
     const rawMax = searchParams.get("max");
@@ -28,20 +27,37 @@ const Home = () => {
     const min = rawMin !== null ? Number(rawMin) : undefined;
     const max = rawMax !== null ? Number(rawMax) : undefined;
     
+    
+     // 1️ Construction des paramètres
+    // ----------------------------
+    // On construit un objet avec tous les paramètres
+    
     const params = { 
       page, 
       keyword, 
        ...(min !== undefined && { "price[gte]": min }),
       ...(max !== undefined && { "price[lte]": max }),
       ...(rating && { ratings: rating }),
-      ...(category && { category })
+      ...(category && { category }),
     };
      console.log("params:", params);
 
+
+      // 2️ Nettoyage des paramètres
+
+      // RTK Query n'aime pas recevoir des valeurs undefined ou "".
+    // Donc on enlève tout ce qui n’est pas défini.
+    const cleanParams = Object.fromEntries(
+        Object.entries(params).filter(([_, v]) => v !== undefined && v !== "")
+    );
+
+    console.log("Final params sent to API:", cleanParams);
     
-    const { data, isLoading, error, isError} = useGetProductsQuery(params);
     
     
+      const { data, isLoading, error, isError} = useGetProductsQuery(cleanParams);
+    
+        // Gestion des erreurs
      useEffect(() => {
         if (isError) {
             toast.error(error?.data?.message || "Error during the loading");
@@ -70,7 +86,7 @@ const Home = () => {
              <div className="row">
                 {
                   data?.products?.map((product) => (
-                  <ProductItem product={product} columnSize={columnSize} />
+                  <ProductItem  key={product._id} product={product} columnSize={columnSize} />
                   ))
                 }
              </div>
