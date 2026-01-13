@@ -20,6 +20,7 @@ import MyOrders from '../order/MyOrders';
 import OrderDetails from '../order/OrderDetails';
 import PaymentSuccess from '../cart/PaymentSuccess';
 import Invoice from '../invoice/Invoice';
+import Wishlist from '../user/Wishlist';
 
 
 
@@ -103,6 +104,12 @@ const userRoutes = () => {
                 <Route path='/payment/success' element={
                   <ProtectedRoute>
                        <PaymentSuccess />
+                  </ProtectedRoute>
+               
+            } />
+                <Route path='/wishlist' element={
+                  <ProtectedRoute>
+                       <Wishlist />
                   </ProtectedRoute>
                
             } />

@@ -43,6 +43,7 @@ const Register = () => {
     };
 
     const onChange = (e) => {
+        // to set the user value
         setUser({ ...user, [e.target.name]: e.target.value });
     }
 

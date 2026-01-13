@@ -6,6 +6,7 @@ const initialState = {
     loading: true
 }
 
+// to put the data in the state
 export const userSlice = createSlice({
     initialState,
     name: "userSlice",

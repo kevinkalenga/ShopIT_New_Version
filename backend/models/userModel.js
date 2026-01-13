@@ -28,6 +28,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "user",
     },
+    // ajout recent
+    wishlist: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Product"
+        }
+    ],
     resetPasswordToken: String,
     resetPasswordExpire: Date,
 }, {

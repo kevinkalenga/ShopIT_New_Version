@@ -33,7 +33,9 @@ const ProductDetails = () => {
   }, [isError]);
 
   const increseQty = () => {
+    // get the input field
     const count = document.querySelector(".count");
+    // the value of imput
     if (count.valueAsNumber >= product.stock) return;
     setQuantity(count.valueAsNumber + 1);
   };
@@ -45,6 +47,7 @@ const ProductDetails = () => {
   };
 
   const setItemToCart = () => {
+    // cart items
     const cartItem = {
       product: product?._id,
       name: product?.name,
@@ -96,7 +99,7 @@ const ProductDetails = () => {
                     height="100"
                     width="100"
                     src={img?.url}
-                    alt={img?.url}
+                    alt={img?.name}
                     onClick={() => setActiveImg(img.url)}
                   />
                 </a>

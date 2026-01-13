@@ -6,6 +6,7 @@ import sendToken from "../utils/sendToken.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import crypto from "crypto"
 import {delete_file, upload_file } from "../utils/cloudinary.js";
+import mongoose from "mongoose";
 // Register user => /api/v1/register
 export const registerUser = catchAsyncErrors(async (req, res, next) => {
     const { name, email, password } = req.body;
@@ -287,4 +288,37 @@ export const deleteUser = catchAsyncErrors(async (req, res, next) => {
     })
 })
 
+
+
+// Ajouter à la wishlist
+export const addToWishlist = catchAsyncErrors(async (req, res, next) => {
+    const user = await User.findById(req.user._id);
+    const { productId } = req.body;
+
+    if (!productId) return next(new ErrorHandler("productId missing", 400));
+
+    if (!user.wishlist.includes(productId)) {
+        user.wishlist.push(productId);
+        await user.save();
+    }
+
+    res.status(200).json({ success: true, wishlist: user.wishlist });
+});
+
+// Retirer de la wishlist
+export const removeFromWishlist = catchAsyncErrors(async (req, res, next) => {
+    const user = await User.findById(req.user._id);
+    const { productId } = req.body;
+
+    user.wishlist = user.wishlist.filter(id => id.toString() !== productId);
+    await user.save();
+
+    res.status(200).json({ success: true, wishlist: user.wishlist });
+});
+
+// Récupérer la wishlist
+export const getWishlist = catchAsyncErrors(async (req, res, next) => {
+    const user = await User.findById(req.user._id).populate("wishlist");
+    res.status(200).json({ success: true, wishlist: user.wishlist });
+});
 

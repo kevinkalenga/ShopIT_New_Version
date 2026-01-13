@@ -13,10 +13,12 @@ export const userApi = createApi({
 
         getMe: builder.query({
             query: () => `/me`,
+            // document rtk => to transform the data
             transformResponse: (result) => result.user,
             async onQueryStarted(args, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled;
+                    // to set the value in the state
                     dispatch(setUser(data))
                     dispatch(setIsAuthenticated(true))
                     dispatch(setLoading(false))
@@ -25,6 +27,7 @@ export const userApi = createApi({
                     console.log(error)
                 }
             },
+            // providesTags so as to refresh the tag User(frontend)
             providesTags: ["User"]
         }),
         updateProfile: builder.mutation({
@@ -35,6 +38,7 @@ export const userApi = createApi({
                     body
                 }
             },
+            // refesh the data of the user
             invalidatesTags: ["User"]
         }),
         uploadAvatar: builder.mutation({
