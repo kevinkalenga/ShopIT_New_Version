@@ -126,10 +126,9 @@
 // export default Header 
 
 
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useSelector, useDispatch } from 'react-redux';
-import { useGetWishlistQuery } from '../../redux/api/wishlistApi';
-import { wishlistApi } from '../../redux/api/wishlistApi';
+
 import { userApi } from '../../redux/api/userApi';
 import { useLazyLogoutQuery } from '../../redux/api/authApi';
 import { logoutUser } from '../../redux/features/userSlice'
@@ -139,28 +138,22 @@ import Search from './Search';
 const Header = () => {
     const { user } = useSelector(state => state.auth)
     const { cartItems } = useSelector(state => state.cart)
-    const [wishlistCount, setWishlistCount] = useState(0) // <-- state local
-    const { data, isLoading: isWishlistLoading } = useGetWishlistQuery(undefined, {
-        skip: !user,
-    });
+  
+ 
     
     const [logout] = useLazyLogoutQuery()
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    // Mettre à jour le compteur chaque fois que les données changent
-    useEffect(() => {
-        setWishlistCount(data?.wishlist?.length || 0)
-    }, [data])
+ 
 
     const logoutHandler = async () => {
         try {
             await logout().unwrap()
             dispatch(logoutUser())
-            dispatch(wishlistApi.util.resetApiState());
             dispatch(userApi.util.resetApiState());
             
-            setWishlistCount(0) // <-- vider immédiatement le compteur
+           
             navigate('/login')
         } catch (err) {
             console.error('Erreur de déconnexion:', err)
@@ -180,10 +173,7 @@ const Header = () => {
                     <span id="cart"> Cart </span>
                     <span id="cart_count">{cartItems?.length}</span>
                 </Link>
-                <Link to="/wishlist" style={{ textDecoration: "none" }} className="ms-3">
-                    <span id="wishlist"> <i className="fa fa-heart"></i> Wishlist </span>
-                    <span id="wishlist_count">{wishlistCount}</span>
-                </Link>
+              
 
                 {user ? (
                     <div className="ms-4 dropdown">
@@ -201,7 +191,7 @@ const Header = () => {
                         </div>
                     </div>
                 ) : (
-                    !isWishlistLoading && <Link to="/login" className="btn ms-4" id="login_btn"> Login </Link>
+                     <Link to="/login" className="btn ms-4" id="login_btn"> Login </Link>
                 )}
             </div>
         </nav>

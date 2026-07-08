@@ -15,9 +15,7 @@ import {
     updateUser, 
     deleteUser,
     uploadAvatar,
-    addToWishlist,
-    removeFromWishlist,
-    getWishlist
+  
 } from "../controllers/authController.js";
 
 
@@ -43,9 +41,6 @@ router.route("/admin/users/:id")
       .put(isAuthenticatedUser, authorizeRoles('admin'), updateUser)
       .delete(isAuthenticatedUser, authorizeRoles('admin'), deleteUser)
 
-// Wishlist
-router.route("/me/wishlist").get(isAuthenticatedUser, getWishlist); // GET wishlist
-router.route("/me/wishlist/add").put(isAuthenticatedUser, addToWishlist); // ADD product
-router.route("/me/wishlist/remove").put(isAuthenticatedUser, removeFromWishlist); // REMOVE product
+
 
 export default router

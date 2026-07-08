@@ -8,13 +8,12 @@ const ConfirmOrder = () => {
   const {cartItems, shippingInfo} = useSelector((state) => state.cart)
   const {user} = useSelector((state) => state.auth)
   
-  const {
-    itemsPrice,
-    shippingPrice,
-    taxPrice,
-    totalPrice
-  } 
-     = calculateOrderCost(cartItems)
+ const {
+  itemsPrice = 0,
+  shippingPrice = 0,
+  taxPrice = 0,
+  totalPrice = 0
+} = cartItems?.length ? calculateOrderCost(cartItems) : {};
  
   
   

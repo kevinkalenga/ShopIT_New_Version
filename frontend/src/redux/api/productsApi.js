@@ -98,7 +98,8 @@ export const productApi = createApi({
             invalidatesTags: ["AdminProducts"],
         }),
         getProductReviews: builder.query({
-            query: (productId) => `/products/${productId}/reviews`
+            query: (productId) => `/reviews?id=${productId}`
+            // query: (productId) => `/products/${productId}/reviews`
         })
 
     }),

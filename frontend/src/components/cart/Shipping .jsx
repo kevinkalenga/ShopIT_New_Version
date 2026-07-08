@@ -19,7 +19,9 @@ const Shipping = () => {
   const [phoneNo, setPhoneNo] = useState("");
   const [country, setCountry] = useState("");
 
-  const { shippingInfo } = useSelector((state) => state.cart);
+  // const { shippingInfo } = useSelector((state) => state.cart);
+
+  const { shippingInfo = {} } = useSelector(state => state.cart || {});
 
   useEffect(() => {
     if (shippingInfo) {

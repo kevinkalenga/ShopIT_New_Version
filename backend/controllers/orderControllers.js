@@ -213,7 +213,7 @@ async function getSalesData(startDate, endDate) {
           date: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }
         },
         totalSales: { $sum: "$totalAmount" },
-        numOrder: { $sum: 1 }   // ✅ counts number of orders
+        numOrder: { $sum: 1 }   // counts number of orders
       }
     },
     {
@@ -253,9 +253,10 @@ function getDatesBetween(startDate, endDate) {
 export const getSales = catchAsyncErrors(async (req, res, next) => {
   const startDate = new Date(req.query.startDate);
   const endDate = new Date(req.query.endDate);
-
-  startDate.setUTCHours(0, 0, 0, 0);
-  endDate.setUTCHours(23, 59, 59, 999);
+  
+  
+  startDate.setUTCHours(0, 0, 0, 0); // 12h AM
+  endDate.setUTCHours(23, 59, 59, 999); // 12h PM
 
   // Récupère les ventes depuis MongoDB
   const salesData = await getSalesData(startDate, endDate);
